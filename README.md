@@ -178,8 +178,13 @@ MYGFRIEND/
 
 ## 🧑‍💻 開發者 (Developers)
 
-* Sinsin Wang (https://www.facebook.com/WangSinsin)(https://x.com/Windgirl2003)
-* Marco Chen (marcochen2023@gmail.com)
+* Sinsin Wang 
+(https://www.facebook.com/WangSinsin)
+(https://x.com/Windgirl2003)
+
+* Marco Chen 
+(marcochen2023@gmail.com)
+
 * Ethan Chen
 
 ## 💬 社群 (Community)
@@ -188,6 +193,7 @@ MYGFRIEND/
 
 您已被邀請加入「My GFriend 我的雲端女友開源討論群」！請點選以下連結加入社群！
 ![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/QrCode.jpg)
+
 https://line.me/ti/g2/sYbY0s982DuzdBu_qPu4u2MogNE1rmK_Im1ihg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default
 
 ---
