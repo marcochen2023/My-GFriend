@@ -3,6 +3,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 想像您有一個專屬的女友，隨時隨地陪伴您，與您聊天、分享心情、送您甜蜜的訊息。現在，MY GFRIEND 讓這個夢想更近一步！這是一個 **開源** 的 AI 雲端女友專案，透過串接**本地 AI 模型**，旨在為您提供一個**私密、可自訂、且具備互動性**的聊天體驗。
 
+
+![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/MyGFriend.jpg)
+
+
 ## ✨ 功能特色
 
 * **熟悉的聊天介面：** 仿 Line/WeChat 的 UI 設計，支援 PC 與行動裝置。
@@ -183,6 +187,7 @@ MYGFRIEND/
 加入我們的開源討論社群：
 
 您已被邀請加入「My GFriend 我的雲端女友開源討論群」！請點選以下連結加入社群！
+![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/QrCode.jpg)
 https://line.me/ti/g2/sYbY0s982DuzdBu_qPu4u2MogNE1rmK_Im1ihg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default
 
 ---
