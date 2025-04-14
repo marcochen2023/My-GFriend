@@ -1,6 +1,4 @@
 <?php
-// funMYGF.php - Complete Final Version (v9 - Enhanced Avatar Check Logging)
-
 // --- Basic Setup & Configuration ---
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -20,7 +18,6 @@ define('OCCUPATIONS_FILE', DATA_DIR . '/occupation.json');
 define('PERSONALITIES_FILE', DATA_DIR . '/personality.json');
 
 // --- Helper Functions ---
-
 /** Sends JSON response and exits (Revised for consistent structure). */
 function sendJsonResponse($data, $statusCode = 200) { if (headers_sent($file, $line)) { logMessage('error.log', "sendJsonResponse ERROR: Headers already sent in {$file} on line {$line}."); exit; } http_response_code($statusCode); $isSuccess = ($statusCode >= 200 && $statusCode < 300); $responseData = []; $responseData['status'] = $isSuccess ? 'success' : 'error'; if (!$isSuccess && is_array($data) && isset($data['message'])) { $responseData['message'] = $data['message']; } elseif ($isSuccess) { $responseData['data'] = $data; } elseif (is_string($data)) { $responseData['message'] = $data; } else { $responseData['message'] = 'An unexpected error occurred.'; } if(isset($_GET['action']) && ($_GET['action'] === 'getChatHistory' || $_GET['action'] === 'getAvatars') && !isset($responseData['data'])) { $responseData['data'] = []; if(!isset($responseData['status'])) $responseData['status'] = 'success'; } $jsonOutput = json_encode($responseData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); if ($jsonOutput === false) { logMessage('error.log', "sendJsonResponse: json_encode failed! Error: " . json_last_error_msg() . " | Data: " . print_r($responseData, true)); http_response_code(500); header('Content-Type: application/json; charset=utf-8'); echo json_encode(['status' => 'error', 'message' => 'Internal server error during JSON encoding.']); exit; } if (headers_sent($file, $line)) { logMessage('error.log', "sendJsonResponse ERROR: Headers already sent (checked again) in {$file} on line {$line}."); exit; } header('Content-Type: application/json; charset=utf-8'); echo $jsonOutput; exit; }
 /** Simple file logger. */
@@ -101,8 +98,6 @@ if ($action) {
              logMessage('debug.log', 'getAvatars: Final count: ' . count($avatars));
              sendJsonResponse($avatars); // sendJsonResponse wraps in {status, data}
              break;
-        // case 'getImageHistory': Removed
-        // case 'deleteImage': Removed
 
         // --- Core Actions ---
         case 'sendMessage':
@@ -189,5 +184,4 @@ if ($action) {
     sendJsonResponse(['message' => 'No action specified.'], 400);
 }
 
-// End of funMYGF.php
 ?>

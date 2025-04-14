@@ -1,0 +1,19 @@
+{
+    "name": "女友",
+    "userName": "哥哥",
+    "occupationId": "office_lady",
+    "personalityId": "gentle",
+    "notes": "",
+    "favorability": 0,
+    "currentAvatar": "image\/avatar\/default_avatar.png",
+    "drawingSampler": "DPM++ 2M SDE Karras",
+    "drawingSteps": 25,
+    "drawingCustomPrompt": "Realistic photograph, Movie light, film grain, vivid colors, depth of field, masterpiece, 4k, high quality, (best quality:1.1),",
+    "drawingNegativePrompt": "worst quality,low quality,worst detail,low detail,bad anatomy, bad hands,error,missing fingers,cropped,signature,watermark,username,blurry,",
+    "adetailerEnabled": false,
+    "adetailerPrompt": "Realistic photograph, Movie light, film grain, vivid colors, depth of field, masterpiece, 4k, high quality, (best quality:1.1), beautiful detailed face, high details, fine details,",
+    "selectedLlmModelId": "llama-breeze2-8b-instruct",
+    "selectedImageModelId": "3",
+    "activeFrequency": "0",
+    "language": "zh-TW"
+}

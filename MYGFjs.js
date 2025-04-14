@@ -1,4 +1,3 @@
-// MYGFjs.js - Complete Final Version (v8 - Fixing JS Response Handling for Avatar Status/List)
 // --- Global Variables & Constants ---
 const API_ENDPOINT = 'funMYGF.php';
 const ACTION_COOLDOWN = 6000;
@@ -91,7 +90,6 @@ async function loadChatHistory() {
         displayMessage('system', translate('chatLoadError'), new Date().toISOString(), null, `error_${Date.now()}`);
     }
 }
-
 
 // --- Button Cooldown Logic ---
 // Array defined globally, populated in initializeApp
@@ -213,7 +211,6 @@ async function requestSelfie() {
     console.log("Req selfie..." + (userGuidanceText ? ` with guidance: "${userGuidanceText}"` : ""));
     isSending = true;
     sfb.disabled = true;
-    // sb.innerHTML = '...'; // 改為在 disableActionButtons 中處理 ICON
     sb.disabled = true;
     showLoading('generatingText');
     if(userGuidanceText){
@@ -262,7 +259,6 @@ async function requestSelfie() {
          console.log("requestSelfie finally block executed.");
     }
 }
-// --- Image History Removed ---
 
 // --- Avatar Management ---
 /** Checks avatar status on load. */
