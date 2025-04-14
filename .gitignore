@@ -1,0 +1,30 @@
+# User-specific data
+data/chathistory.log
+data/girlfriend_settings.json.template
+data/error.log
+data/debug.log
+data/llm_*.log
+data/promptgen_*.log
+data/imagegen_*.log
+data/curl_error.log
+data/security.log
+
+# User-uploaded/generated images
+image/avatar/*
+!image/avatar/default_avatar.png
+image/photo/*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE files
+.vscode/
+*.swp
+*~
+*.bak
+*.tmp
+
+# PHP dependencies (if using Composer later)
+/vendor/
+composer.lock

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "displayName": "SDWEBUI_Local",
+    "model": "SDXL_model",
+    "SD_WEBUI_API_URL": "http://127.0.0.1:7860/sdapi/v1/txt2img",
+    "type": "image",
+    "API_KEY": ""
+  },
+  {
+    "id": "2",
+    "displayName": "SDWEBUI_runpod",
+    "model": "SDXL_model",
+    "SD_WEBUI_API_URL": "YOUR_RUNPOD_API/sdapi/v1/txt2img",
+    "type": "image",
+    "API_KEY": ""
+  }
+]

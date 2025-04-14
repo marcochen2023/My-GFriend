@@ -1,0 +1,66 @@
+[
+  {
+    "id": "office_lady",
+    "name": {
+      "zh-TW": "辦公室女郎",
+      "en": "Office Lady",
+      "ja": "オフィスレディ"
+    }
+  },
+  {
+    "id": "shop_clerk",
+    "name": {
+      "zh-TW": "超商店員",
+      "en": "Convenience Store Clerk",
+      "ja": "コンビニ店員"
+    }
+  },
+  {
+    "id": "department_store_staff",
+    "name": {
+      "zh-TW": "百貨公司櫃姐",
+      "en": "Department Store Staff",
+      "ja": "デパート店員"
+    }
+  },
+  {
+    "id": "kindergarten_teacher",
+    "name": {
+      "zh-TW": "幼教老師",
+      "en": "Kindergarten Teacher",
+      "ja": "幼稚園の先生"
+    }
+  },
+  {
+    "id": "nurse",
+    "name": {
+      "zh-TW": "護士",
+      "en": "Nurse",
+      "ja": "看護師"
+    }
+  },
+  {
+    "id": "student",
+    "name": {
+      "zh-TW": "學生",
+      "en": "Student",
+      "ja": "学生"
+    }
+  },
+  {
+    "id": "artist",
+    "name": {
+      "zh-TW": "藝術家",
+      "en": "Artist",
+      "ja": "芸術家"
+    }
+  },
+  {
+    "id": "waitress",
+    "name": {
+      "zh-TW": "餐廳服務生",
+      "en": "Waitress",
+      "ja": "ウェイトレス"
+    }
+  }
+]

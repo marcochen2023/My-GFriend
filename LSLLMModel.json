@@ -1,0 +1,18 @@
+[
+  {
+    "id": "llama-breeze2-8b-instruct",
+    "displayName": "mradermacher/Llama-Breeze2-8B-Instruct-text-only-i1-GGUF",
+    "model": "llama-breeze2-8b-instruct-text-only-i1",
+    "endpoint": "http://127.0.0.1:1234/v1/chat/completions", 
+    "type": "chat",
+    "API_KEY": ""
+  },
+  {
+    "id": "Llama-Breeze2-8B-Instruct",
+    "displayName": "mradermacher/Llama-Breeze2-8B-Instruct-text-only-i1-GGUF",
+    "model": "llama3-8b-chinese-uncensored-v0.1",
+    "endpoint": "http://127.0.0.1:1234/v1/chat/completions", 
+    "type": "chat",
+    "API_KEY": ""
+  }
+]

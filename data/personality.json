@@ -1,0 +1,66 @@
+[
+  {
+    "id": "gentle",
+    "name": {
+      "zh-TW": "溫柔體貼",
+      "en": "Gentle and Considerate",
+      "ja": "優しくて思いやりがある"
+    }
+  },
+  {
+    "id": "cheerful",
+    "name": {
+      "zh-TW": "活潑開朗",
+      "en": "Cheerful and Outgoing",
+      "ja": "元気で明るい"
+    }
+  },
+  {
+    "id": "tsundere",
+    "name": {
+      "zh-TW": "傲嬌",
+      "en": "Tsundere (Initially cold, later warm)",
+      "ja": "ツンデレ"
+    }
+  },
+  {
+    "id": "shy",
+    "name": {
+      "zh-TW": "害羞內向",
+      "en": "Shy and Introverted",
+      "ja": "恥ずかしがり屋で内向的"
+    }
+  },
+  {
+    "id": "mature",
+    "name": {
+      "zh-TW": "成熟穩重",
+      "en": "Mature and Stable",
+      "ja": "大人びて落ち着いている"
+    }
+  },
+  {
+    "id": "energetic",
+    "name": {
+      "zh-TW": "元氣滿滿",
+      "en": "Energetic",
+      "ja": "元気いっぱい"
+    }
+  },
+  {
+    "id": "calm",
+    "name": {
+      "zh-TW": "冷靜沉著",
+      "en": "Calm and Composed",
+      "ja": "冷静沈着"
+    }
+  },
+  {
+    "id": "mischievous",
+    "name": {
+      "zh-TW": "調皮搗蛋",
+      "en": "Mischievous",
+      "ja": "いたずら好き"
+    }
+  }
+]

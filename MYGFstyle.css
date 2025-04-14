@@ -1,0 +1,119 @@
+/* MYGFstyle.css - Complete Final Version (v6) */
+
+/* --- Base Styles & Variables --- */
+:root { --primary-pink: #FFC0CB; --secondary-pink: #FFB6C1; --accent-pink: #FF69B4; --dark-pink: #DB7093; --text-color: #333; --light-text-color: #555; --bubble-user-bg: #D1E8FF; --bubble-gf-bg: #FFE4E1; --border-color: #eee; --background-color: #f9f9f9; --modal-bg: rgba(0, 0, 0, 0.6); --link-color: var(--accent-pink); --font-family: 'Noto Sans TC', sans-serif; --header-height: 70px; --footer-height-actions: 45px; --footer-height-input: 55px; --input-area-padding: 8px; }
+body { margin: 0; font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
+.app-container { width: 100%; max-width: 1200px; height: 95vh; max-height: 800px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-color); }
+
+/* --- Header --- */
+.app-header { height: var(--header-height); background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink)); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; border-bottom: 1px solid var(--dark-pink); }
+.header-left { display: flex; align-items: center; }
+.logo { width: 64px; height: 64px; margin-right: 15px; cursor: pointer; object-fit: cover; border-radius: 50%; border: 1px solid white; }
+.app-title { font-size: 1.5em; font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.header-icon img { vertical-align: middle; }
+#language-switcher { padding: 5px 8px; border-radius: 5px; border: 1px solid var(--dark-pink); background-color: rgba(255, 255, 255, 0.8); cursor: pointer; font-size: 0.9em; }
+.icon-button { background: none; border: none; cursor: pointer; padding: 0; line-height: 0; transition: background-color 0.2s ease; border-radius: 5px; }
+#copyright-btn span { line-height: 48px; color: white; font-weight: bold; } /* Style for copyright symbol */
+.icon-button:hover { background-color: rgba(255, 255, 255, 0.2); }
+.icon-button img { display: block; }
+
+/* --- Favorability Bar --- */
+.favorability-bar-container { padding: 8px 20px; background-color: #fdf0f3; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); flex-shrink: 0; font-size: 0.9em; color: var(--light-text-color); }
+#favorability-bar { flex-grow: 1; height: 12px; appearance: none; border: none; border-radius: 6px; overflow: hidden; }
+#favorability-bar::-webkit-progress-bar { background-color: #e0e0e0; border-radius: 6px; } #favorability-bar::-moz-progress-bar { background-color: #e0e0e0; border-radius: 6px; }
+#favorability-bar::-webkit-progress-value { background: linear-gradient(90deg, var(--accent-pink), var(--primary-pink)); border-radius: 6px; transition: width 0.5s ease-out; } #favorability-bar::-moz-progress-bar { background: linear-gradient(90deg, var(--accent-pink), var(--primary-pink)); border-radius: 6px; transition: width 0.5s ease-out; }
+#favorability-value { font-weight: bold; min-width: 80px; text-align: right; }
+
+/* --- Chat Interface --- */
+.chat-interface { flex-grow: 1; padding: 15px; overflow-y: auto; background-color: #fff; display: flex; flex-direction: column; }
+.message-container { display: flex; margin-bottom: 15px; max-width: 85%; position: relative; }
+.message-avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; align-self: flex-start; cursor: pointer; border: 1px solid var(--border-color); object-fit: cover; }
+.message-content { display: flex; flex-direction: column; max-width: calc(100% - 50px); }
+.girlfriend-name { font-size: 0.8em; color: var(--light-text-color); margin-bottom: 3px; margin-left: 5px; }
+.message-bubble { padding: 10px 15px; border-radius: 18px; position: relative; word-wrap: break-word; hyphens: auto; line-height: 1.5; background-color: var(--bubble-gf-bg); }
+.message-bubble p { margin: 0 0 5px 0; }
+.message-timestamp { font-size: 0.75em; color: var(--light-text-color); display: block; text-align: right; margin-top: 5px; }
+.user-message { align-self: flex-end; margin-left: auto; }
+.user-message .message-bubble { background-color: var(--bubble-user-bg); color: #222; border-top-right-radius: 5px; }
+.girlfriend-message { align-self: flex-start; margin-right: auto; }
+.girlfriend-message .message-bubble { background-color: var(--bubble-gf-bg); border-top-left-radius: 5px; }
+.system-message .message-bubble { background-color: #f0f0f0; color: #666; font-style: italic; font-size: 0.9em; text-align: center; border-radius: 5px; padding: 5px 10px; margin: 5px auto; width: fit-content; max-width: 90%; }
+.chat-image { max-width: 100%; max-height: 300px; border-radius: 10px; display: block; margin-bottom: 5px; cursor: zoom-in; }
+.action-buttons-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; margin-left: 5px; }
+.action-button { padding: 5px 12px; background-color: #fff; border: 1px solid var(--accent-pink); color: var(--accent-pink); border-radius: 15px; cursor: pointer; font-size: 0.85em; transition: all 0.2s ease; }
+.action-button:hover { background-color: var(--secondary-pink); color: white; border-color: var(--secondary-pink); }
+.delete-message-btn { position: absolute; top: -5px; background-color: rgba(255, 255, 255, 0.7); border: 1px solid #ccc; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 18px; text-align: center; cursor: pointer; opacity: 0; transition: opacity 0.2s ease; z-index: 5; padding: 0; }
+.message-container:hover .delete-message-btn { opacity: 1; }
+.user-message .delete-message-btn { left: -10px; } .girlfriend-message .delete-message-btn { right: -10px; }
+.delete-message-btn:hover { background-color: #f00; color: white; border-color: #f00; }
+
+/* --- Input Area --- */
+.input-area { background-color: #f0f0f0; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; padding: var(--input-area-padding); flex-shrink: 0; gap: 5px; }
+.action-buttons-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; height: var(--footer-height-actions); padding-bottom: 5px; }
+.action-buttons-group button, .action-buttons-group select { padding: 6px 12px; border: none; border-radius: 15px; background-color: var(--primary-pink); color: white; cursor: pointer; font-size: 0.85em; transition: background-color 0.2s ease; white-space: nowrap; }
+.action-buttons-group button:hover { background-color: var(--accent-pink); }
+.action-buttons-group select { background-color: #fff; color: var(--text-color); border: 1px solid var(--primary-pink); max-width: 100px; }
+.gift-button-container { position: relative; }
+.message-input-container { display: flex; align-items: flex-end; width: 100%; gap: 8px; height: var(--footer-height-input); }
+#message-input { flex-grow: 1; border: 1px solid var(--border-color); border-radius: 18px; padding: 10px 15px; font-size: 1em; font-family: var(--font-family); resize: none; min-height: 22px; max-height: calc(var(--footer-height-input) - 10px); overflow-y: auto; line-height: 1.4; transition: border-color 0.2s ease; }
+#message-input:focus { outline: none; border-color: var(--primary-pink); box-shadow: 0 0 5px rgba(255, 192, 203, 0.5); }
+.send-button { background-color: var(--accent-pink); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; flex-shrink: 0; cursor: pointer; transition: background-color 0.2s ease; display: flex; justify-content: center; align-items: center; font-size: 1.6em; padding: 0; line-height: 1; text-align: center; overflow: hidden; }
+.send-button:hover { background-color: var(--dark-pink); }
+.send-button:disabled { background-color: #ccc; cursor: not-allowed; opacity: 0.7; /* Visual cue for disabled */ }
+/* Add styles for other action buttons if needed */
+#call-girlfriend-btn:disabled, #gift-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+
+/* --- Modals --- */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: var(--modal-bg); animation: fadeIn 0.3s ease; }
+.modal-content { background-color: #fefefe; margin: 10% auto; padding: 25px 30px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.3s ease; max-height: 80vh; /* Prevent modal from being too tall */ overflow-y: auto; /* Add scroll to modal content if needed */ }
+.modal-content.large { max-width: 800px; margin: 5% auto; }
+.close-btn { color: #aaa; position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; z-index: 10; } /* Ensure close button is on top */
+.close-btn:hover, .close-btn:focus { color: black; text-decoration: none; }
+.modal h2 { margin-top: 0; color: var(--dark-pink); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+.setting-item { margin-bottom: 15px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.setting-item label { font-weight: 500; color: var(--light-text-color); min-width: 120px; flex-shrink: 0; }
+.setting-item input[type="text"], .setting-item input[type="number"], .setting-item select, .setting-item textarea { flex-grow: 1; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.95em; font-family: var(--font-family); min-width: 200px; box-sizing: border-box; }
+.setting-item textarea { min-height: 60px; resize: vertical; }
+.setting-item.checkbox-item label { min-width: auto; cursor: pointer; }
+#adetailer-options small { color: #777; font-size: 0.85em; display: block; margin-bottom: 10px; }
+.modal button { padding: 10px 20px; background-color: var(--primary-pink); color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s ease; margin-top: 10px; }
+.modal button:hover { background-color: var(--accent-pink); }
+.avatar-thumbnail-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; max-height: 150px; overflow-y: auto; padding: 5px; border: 1px solid var(--border-color); border-radius: 5px; min-height: 78px; background-color: #f8f8f8; }
+.avatar-thumbnail { width: 64px; height: 64px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s ease; background-color: #eee; }
+.avatar-thumbnail.selected { border-color: var(--accent-pink); } .avatar-thumbnail:hover { border-color: var(--secondary-pink); }
+/* --- Copyright Modal --- */
+.copyright-content h3 { margin-top: 15px; margin-bottom: 5px; color: var(--dark-pink); font-size: 1.1em; }
+.copyright-content p { margin-bottom: 10px; line-height: 1.6; font-size: 0.9em; color: var(--light-text-color); } /* Slightly smaller text */
+.copyright-content p small { font-size: 0.85em; color: #999; }
+.gift-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; max-height: 60vh; overflow-y: auto; padding: 10px; }
+.gift-item { display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; background-color: #fff; transition: box-shadow 0.2s ease; }
+.gift-item:hover { box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+.gift-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
+.gift-name { font-size: 0.9em; font-weight: 500; margin-bottom: 4px; }
+.gift-price { font-size: 0.8em; color: var(--light-text-color); margin-bottom: 8px; }
+.gift-item .send-gift-confirm-btn { font-size: 0.85em; padding: 5px 10px; margin-top: auto; }
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.7); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px); }
+.loading-spinner { border: 6px solid #f3f3f3; border-top: 6px solid var(--accent-pink); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+#loading-text { color: var(--dark-pink); font-weight: 500; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+#avatar-cropper-container img { display: block; max-width: 100%; }
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+    .app-container { height: 100vh; max-height: none; border-radius: 0; border: none; }
+    .app-header { padding: 0 10px; height: 60px; } .logo { width: 48px; height: 48px; } .app-title { font-size: 1.2em; } .header-right { gap: 5px; }
+    .header-icon img[alt="Settings"], .header-icon img[alt="Image History"] { width: 36px; height: 36px; } .header-icon img[alt="Girlfriend Settings"] { width: 28px; height: 28px; }
+    #language-switcher { padding: 4px 6px; font-size: 0.8em;} .favorability-bar-container { padding: 6px 10px; font-size: 0.8em; }
+    .chat-interface { padding: 10px; } .message-container { max-width: 90%; }
+    .input-area { height: auto; padding: 8px; flex-direction: column; } .action-buttons-group { height: auto; justify-content: space-around; margin-bottom: 5px; }
+    .action-buttons-group button, .action-buttons-group select { padding: 6px 10px; font-size: 0.8em; } .message-input-container { height: auto; gap: 5px; }
+    #message-input { padding: 8px 12px; max-height: 80px; } .send-button { width: 36px; height: 36px; font-size: 1.4em; }
+    .modal-content { width: 90%; margin: 15% auto; padding: 20px; } .modal-content.large { width: 90%; margin: 10% auto; }
+    .setting-item { flex-direction: column; align-items: stretch; gap: 5px; } .setting-item label { min-width: 0; text-align: left; margin-bottom: 3px; }
+    .setting-item input[type="text"], .setting-item input[type="number"], .setting-item select, .setting-item textarea { min-width: 0; width: 100%; box-sizing: border-box; }
+    .image-history-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; } .gift-list-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 15px; }
+}
