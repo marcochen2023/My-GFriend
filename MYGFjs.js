@@ -111,6 +111,7 @@ async function sendMessage(messageText = null, isAction = false, originatingMess
     isSending = true;
     sb.disabled = true; // Disable buttons during processing
     sfb.disabled = true;
+    // sb.innerHTML = '...'; // Optionally indicate loading state on button
 
     let userMessageId = `temp_${Date.now()}`;
     let userMessageTimestamp = new Date();
@@ -267,7 +268,55 @@ async function requestSelfie() {
 /** Checks avatar status on load. */
 async function checkAvatarStatus() { console.log("Checking avatar status..."); try { const response = await fetchData('checkAvatarStatus', {}, 'GET'); console.log("Received checkAvatarStatus response:", response); if (response?.status === 'success' && typeof response.data === 'object') { const statusData = response.data; console.log("Parsed statusData:", statusData); const amt = getElement('avatar-modal-title'); const eac = getElement('existing-avatars'); const cao = getElement('change-avatar-options'); if (!statusData.exists || !statusData.hasAvatar) { console.log("Condition triggering alert met: !exists or !hasAvatar"); alert(translate('avatarFolderMissing')); if(amt) amt.textContent = translate('avatarModalTitleCreate'); if(eac) eac.style.display = 'none'; if(cao) cao.style.display = 'block'; showModal('avatar-modal'); } else if (statusData.currentAvatar) { console.log("Condition for setting current avatar met."); updateCurrentAvatar(statusData.currentAvatar); } else { console.log("Condition for using default avatar met."); updateCurrentAvatar(null); } } else { console.error("checkAvatarStatus received invalid response structure:", response); alert(translate('avatarCheckError')); } } catch (error) { console.error("Error during checkAvatarStatus fetch:", error); } }
 /** Loads existing avatar thumbnails. */
-async function loadExistingAvatars() { const eac = getElement('existing-avatars'); if(!eac) return; eac.innerHTML = `<small>${translate('loadingText')}</small>`; eac.style.display = 'flex'; try { const response = await fetchData('getAvatars', {}, 'GET'); console.log("Received getAvatars response:", response); let avatarUrls = []; if (response && response.status === 'success' && Array.isArray(response.data)) { avatarUrls = response.data; console.log("Parsed avatarUrls:", avatarUrls); } else { console.error("Invalid response structure from getAvatars:", response); } eac.innerHTML = ''; if (avatarUrls.length > 0) { console.log("Avatar URLs found, attempting display thumbnails."); avatarUrls.forEach(avatarUrl => { const thumb = document.createElement('img'); thumb.src = avatarUrl + `?t=${new Date().getTime()}`; thumb.alt = 'Avatar'; thumb.classList.add('avatar-thumbnail'); thumb.dataset.path = avatarUrl; thumb.loading = 'lazy'; thumb.onerror = () => { thumb.alt = 'Load Fail'; thumb.style.border = '1px solid red'; }; if (girlfriendSettings.currentAvatar && avatarUrl.includes(girlfriendSettings.currentAvatar.split('?')[0])) thumb.classList.add('selected'); eac.appendChild(thumb); }); } else { console.log("avatarUrls array empty, displaying 'No existing avatars'."); eac.innerHTML = `<small>No existing avatars.</small>`; } } catch (error) { console.error("Failed load existing avatars:", error); if(eac) eac.innerHTML = `<small>${translate('errorTitle')}</small>`; } }
+async function loadExistingAvatars() {
+    const eac = getElement('existing-avatars');
+    if (!eac) return;
+    eac.innerHTML = `<small>${translate('loadingText')}</small>`;
+    eac.style.display = 'flex'; // Ensure container is visible
+    try {
+        const response = await fetchData('getAvatars', {}, 'GET'); // Expects {status:'success', data:[...]}
+        console.log("Received getAvatars response:", response); // Log response
+        let avatarUrls = [];
+        // ** FIXED: Check response status and access response.data **
+        if (response && response.status === 'success' && Array.isArray(response.data)) {
+            avatarUrls = response.data;
+        } else {
+            console.error("Invalid response structure from getAvatars:", response);
+        }
+
+        eac.innerHTML = ''; // Clear loading/previous content **before** loop
+
+        if (avatarUrls.length > 0) {
+            console.log(`Avatar URLs found (${avatarUrls.length}), attempting display thumbnails.`); // Log count
+            avatarUrls.forEach(avatarUrl => {
+                const thumb = document.createElement('img');
+                thumb.src = avatarUrl + `?t=${new Date().getTime()}`; // Add cache buster
+                thumb.alt = 'Avatar Thumbnail';
+                thumb.classList.add('avatar-thumbnail');
+                thumb.dataset.path = avatarUrl; // Store path for click handler
+                thumb.loading = 'lazy';
+                thumb.onerror = () => {
+                    thumb.alt = 'Load Fail';
+                    thumb.style.border = '1px solid red';
+                };
+                // Highlight currently selected avatar based on internal state
+                if (girlfriendSettings.currentAvatar && avatarUrl.includes(girlfriendSettings.currentAvatar.split('?')[0])) {
+                    thumb.classList.add('selected');
+                }
+                eac.appendChild(thumb);
+                console.log('Appended thumb:', avatarUrl); // Log each append
+            });
+            // Log final HTML content of the container
+            // console.log('Finished appending thumbnails. Container innerHTML:', eac.innerHTML);
+        } else {
+            console.log("avatarUrls array is empty, displaying 'No existing avatars'.");
+            eac.innerHTML = `<small>No existing avatars.</small>`; // Display message if no avatars found
+        }
+    } catch (error) {
+        console.error("Failed load existing avatars:", error);
+        if (eac) eac.innerHTML = `<small>${translate('errorTitle')}: ${translate('fetchError')}</small>`; // Show fetch error
+    }
+}
 /** Handles clicking existing avatar thumbnail. */
 async function handleAvatarThumbnailClick(event) { const target = event.target; if (target.classList.contains('avatar-thumbnail') && target.dataset.path) { const selectedPath = target.dataset.path; console.log("Thumb clicked, attempting set path:", selectedPath); document.querySelectorAll('.avatar-thumbnail.selected').forEach(el => el.classList.remove('selected')); target.classList.add('selected'); updateCurrentAvatar(selectedPath); showLoading('savingText'); try { const response = await fetchData('setCurrentAvatar', { avatarPath: selectedPath }, 'POST'); if (response?.status === 'success') { girlfriendSettings.currentAvatar = response.newAvatarPath || selectedPath; updateCurrentAvatar(girlfriendSettings.currentAvatar); console.log("Current avatar set success:", girlfriendSettings.currentAvatar); } else { target.classList.remove('selected'); updateCurrentAvatar(girlfriendSettings.currentAvatar); alert(`${translate('errorTitle')}: ${response?.message || translate('avatarSetFailed')}`); } } catch (error) { target.classList.remove('selected'); updateCurrentAvatar(girlfriendSettings.currentAvatar); } finally { hideLoading(); } } }
 /** Initializes Cropper.js. */
@@ -275,8 +324,80 @@ function setupAvatarCropper(imageUrl) { const acc = getElement('avatar-cropper-c
 /** Handles avatar file selection. */
 function handleAvatarUpload(event) { const aui = getElement('avatar-upload-input'); const file = event.target.files ? event.target.files[0] : null; if (!file || !file.type.startsWith('image/')) { alert("Select valid image."); return; } const reader = new FileReader(); reader.onload = (e) => setupAvatarCropper(e.target.result); reader.onerror = (e) => { console.error("FileReader error:", e); alert("Failed read file."); }; reader.readAsDataURL(file); if(aui) aui.value = ''; }
 /** Confirms crop and uploads avatar. */
-async function confirmAvatarCropAndUpload() { const ccb = getElement('confirm-crop-btn'); const acc = getElement('avatar-cropper-container'); if (!cropperInstance || !ccb) { alert("Cropper not ready."); return; } const croppedImageDataUrl = cropperInstance.getCroppedCanvas({ width: 512, height: 512, fillColor: '#fff', imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }).toDataURL('image/jpeg', 0.92); showLoading('uploadingText'); ccb.disabled = true; try { const response = await fetchData('uploadAvatar', { imageDataUrl: croppedImageDataUrl }, 'POST'); if (response?.status === 'success' && response.avatarUrl) { console.log("Upload success, attempting to set:", response.avatarUrl); try { const setResponse = await fetchData('setCurrentAvatar', { avatarPath: response.avatarUrl }, 'POST'); if (setResponse?.status === 'success') { updateCurrentAvatar(setResponse.newAvatarPath || response.avatarUrl); girlfriendSettings.currentAvatar = setResponse.newAvatarPath || response.avatarUrl; alert(translate('avatarUploadedSuccess')); } else { alert(`${translate('errorTitle')}: ${translate('avatarSetFailed')} (${setResponse?.message})`); } } catch (setErr) { console.error("Error setting avatar after upload:", setErr); alert(`${translate('errorTitle')}: ${translate('avatarSetFailed')}`); } if(acc) acc.style.display = 'none'; if(acc) acc.innerHTML = ''; if(ccb) ccb.style.display = 'none'; if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; } await loadExistingAvatars(); } else alert(`${translate('errorTitle')}: ${response?.message || translate('avatarNotUploaded')}`); } catch (uploadErr) { console.error("Upload error:", uploadErr); } finally { hideLoading(); ccb.disabled = false; } }
-// --- Generate Avatar Functions Removed ---
+async function confirmAvatarCropAndUpload() {
+    const ccb = getElement('confirm-crop-btn');
+    const acc = getElement('avatar-cropper-container');
+    if (!cropperInstance || !ccb) {
+        alert("Cropper not ready.");
+        return;
+    }
+    const croppedImageDataUrl = cropperInstance.getCroppedCanvas({
+        width: 512, height: 512, fillColor: '#fff', imageSmoothingEnabled: true, imageSmoothingQuality: 'high'
+    }).toDataURL('image/jpeg', 0.92);
+
+    showLoading('uploadingText');
+    ccb.disabled = true;
+    let uploadSuccess = false;
+    let newAvatarRelativePath = null;
+
+    try {
+        // Step 1: Upload the image data
+        const response = await fetchData('uploadAvatar', { imageDataUrl: croppedImageDataUrl }, 'POST');
+        console.log("Received uploadAvatar response:", response);
+
+        if (response?.status === 'success' && response.data?.avatarUrl) { // ** 修正: 檢查 response.data.avatarUrl **
+            uploadSuccess = true;
+            newAvatarRelativePath = response.data.avatarUrl; // ** 從 data 獲取 **
+            console.log("Upload success, attempting to set:", newAvatarRelativePath);
+
+            // Step 2: Attempt to set the newly uploaded avatar as current
+            try {
+                console.log("Calling setCurrentAvatar with path:", newAvatarRelativePath);
+                const setResponse = await fetchData('setCurrentAvatar', { avatarPath: newAvatarRelativePath }, 'POST');
+                console.log("Received setCurrentAvatar response:", setResponse);
+
+                if (setResponse?.status === 'success') {
+                    // Set & Save successful
+                    girlfriendSettings.currentAvatar = setResponse.newAvatarPath || newAvatarRelativePath;
+                    updateCurrentAvatar(girlfriendSettings.currentAvatar); // Update with confirmed path
+                    alert(translate('avatarUploadedSuccess'));
+                } else {
+                    // Set failed, but upload succeeded. Update UI optimistically but warn user.
+                    console.warn("setCurrentAvatar failed after upload:", setResponse);
+                    girlfriendSettings.currentAvatar = newAvatarRelativePath; // Update internal state optimistically
+                    updateCurrentAvatar(newAvatarRelativePath); // Update display optimistically
+                    alert(`${translate('avatarUploadedSuccess')} (${translate('avatarSetFailed')}: ${setResponse?.message})`); // Indicate success + set failed
+                }
+            } catch (setErr) {
+                // Fetch error during setCurrentAvatar
+                console.error("Error calling setCurrentAvatar after upload:", setErr);
+                girlfriendSettings.currentAvatar = newAvatarRelativePath; // Update internal state optimistically
+                updateCurrentAvatar(newAvatarRelativePath); // Update display optimistically
+                alert(`${translate('avatarUploadedSuccess')} (${translate('avatarSetFailed')})`); // Indicate success + set failed generic
+            }
+
+            // Clean up cropper UI only if upload was successful
+            if(acc) acc.style.display = 'none'; if(acc) acc.innerHTML = '';
+            if(ccb) ccb.style.display = 'none';
+            if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+
+            // Refresh the thumbnail list regardless of set success (since upload worked)
+            await loadExistingAvatars();
+
+        } else {
+            // uploadAvatar itself failed
+            alert(`${translate('errorTitle')}: ${response?.message || translate('avatarNotUploaded')}`);
+        }
+    } catch (uploadErr) {
+        // Error during the fetch call to uploadAvatar
+        console.error("Upload error:", uploadErr);
+        // Alert handled by fetchData
+    } finally {
+        hideLoading();
+        if(ccb) ccb.disabled = false;
+    }
+}
+
 
 // --- Settings Management ---
 /** Saves application settings. */
@@ -291,25 +412,8 @@ const GIFTS = [ { id: 'rose', price: { 'zh-TW': 'NT$150', 'en': 'US$5', 'ja': '�
 /** Populates gift modal. */
 function populateGiftModal() { const container = getElement('gift-list-container'); if(!container) return; container.innerHTML = ''; GIFTS.forEach(gift => { const itemDiv = document.createElement('div'); itemDiv.classList.add('gift-item'); itemDiv.dataset.giftId = gift.id; itemDiv.dataset.giftValue = gift.value; itemDiv.dataset.giftNameKey = gift.nameKey; const img = document.createElement('img'); img.src = gift.img || 'image/gifts/default.png'; img.alt = translate(gift.nameKey) || gift.id; img.loading = 'lazy'; img.onerror = () => { img.src = 'image/gifts/default.png'; }; const nameSpan = document.createElement('span'); nameSpan.classList.add('gift-name'); nameSpan.textContent = translate(gift.nameKey) || gift.id; const priceSpan = document.createElement('span'); priceSpan.classList.add('gift-price'); priceSpan.textContent = gift.price[currentLanguage] || gift.price['en'] || 'N/A'; const sendBtn = document.createElement('button'); sendBtn.classList.add('send-gift-confirm-btn'); sendBtn.textContent = translate('sendGiftConfirmBtn'); itemDiv.appendChild(img); itemDiv.appendChild(nameSpan); itemDiv.appendChild(priceSpan); itemDiv.appendChild(sendBtn); container.appendChild(itemDiv); }); }
 /** Handles gift send button clicks. */
-function handleGiftSendClick(event) {
-    // Check if the click target is the send button within a gift item
-    if (event.target.classList.contains('send-gift-confirm-btn')) {
-        const giftItem = event.target.closest('.gift-item'); // Find the parent .gift-item element
-
-        // Check if the necessary data attributes exist on the gift item
-        if (giftItem?.dataset?.giftId && giftItem.dataset.giftValue && giftItem.dataset.giftNameKey) {
-            const giftId = giftItem.dataset.giftId;
-            const giftValue = parseInt(giftItem.dataset.giftValue, 10);
-            const giftName = translate(giftItem.dataset.giftNameKey); // Still useful for logging or potential future use
-
-            console.log(`Sending gift ${giftName} (ID: ${giftId}) without confirmation.`); // Log the action
-            sendGift(giftId, giftValue, giftName);
-
-        } else {
-            console.error("Could not find necessary gift data attributes on clicked item.", giftItem);
-        }
-    }
-}/** Sends gift data to backend. */
+function handleGiftSendClick(event) { if (event.target.classList.contains('send-gift-confirm-btn')) { const giftItem = event.target.closest('.gift-item'); if (giftItem?.dataset?.giftId && giftItem.dataset.giftValue && giftItem.dataset.giftNameKey) { const giftId = giftItem.dataset.giftId; const giftValue = parseInt(giftItem.dataset.giftValue, 10); const giftName = translate(giftItem.dataset.giftNameKey); if (confirm(translate('confirmSendGift', { giftName: giftName }))) sendGift(giftId, giftValue, giftName); } } }
+/** Sends gift data to backend. */
 async function sendGift(giftId, giftValue, giftName) {
     showLoading('sendingText');
     hideModal('gift-modal');

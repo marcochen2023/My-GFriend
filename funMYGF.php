@@ -1,4 +1,6 @@
 <?php
+// funMYGF.php - Complete Final Version (v9 - Enhanced Avatar Check Logging)
+
 // --- Basic Setup & Configuration ---
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -61,46 +63,7 @@ if ($action) {
     switch ($action) {
 
         // --- Initial Data Loading ---
-	// 在 funMYGF.php 的 switch ($action) 中
-	case 'getAppSettings':
-		$llmModelsList = readJsonFile(LLM_MODELS_FILE) ?? [];
-		$imageModelsList = readJsonFile(IMAGE_MODELS_FILE) ?? [];
-		$currentGirlfriendSettings = readJsonFile(GF_SETTINGS_FILE) ?? $defaultGirlfriendSettings; // 需要讀取設定來獲取預設選中項
-
-		// ** 過濾 LLM 模型列表，只保留 ID 和顯示名稱 **
-		$llmModelsForFrontend = [];
-		foreach ($llmModelsList as $model) {
-			if (isset($model['id']) && isset($model['displayName'])) {
-				 $llmModelsForFrontend[] = [
-					 'id' => $model['id'],
-					 'displayName' => $model['displayName']
-				 ];
-			}
-		}
-
-		// ** 過濾圖片模型列表，只保留 ID 和顯示名稱 **
-		$imageModelsForFrontend = [];
-		 foreach ($imageModelsList as $model) {
-			 if (isset($model['id']) && isset($model['displayName'])) {
-				  $imageModelsForFrontend[] = [
-					  'id' => $model['id'],
-					  'displayName' => $model['displayName']
-				  ];
-			 }
-		 }
-
-		// 獲取當前選中的 ID
-		$selectedLlmId = $currentGirlfriendSettings['selectedLlmModelId'] ?? ($llmModelsForFrontend[0]['id'] ?? null);
-		$selectedImageId = $currentGirlfriendSettings['selectedImageModelId'] ?? ($imageModelsForFrontend[0]['id'] ?? null);
-
-		// ** 只發送過濾後的列表和選中的 ID **
-		sendJsonResponse([
-			'llmModels' => $llmModelsForFrontend,
-			'imageModels' => $imageModelsForFrontend,
-			'selectedLlmModelId' => $selectedLlmId,
-			'selectedImageModelId' => $selectedImageId
-		]);
-		break; 
+        case 'getAppSettings': $llmModelsList = readJsonFile(LLM_MODELS_FILE) ?? []; $imageModelsList = readJsonFile(IMAGE_MODELS_FILE) ?? []; sendJsonResponse(['llmModels' => $llmModelsList, 'imageModels' => $imageModelsList, 'selectedLlmModelId' => $currentGirlfriendSettings['selectedLlmModelId'] ?? ($llmModelsList[0]['id'] ?? null), 'selectedImageModelId' => $currentGirlfriendSettings['selectedImageModelId'] ?? ($imageModelsList[0]['id'] ?? null)]); break;
         case 'getGirlfriendSettings': if (!file_exists(GF_SETTINGS_FILE)) writeJsonFile(GF_SETTINGS_FILE, $defaultGirlfriendSettings); $settings = readJsonFile(GF_SETTINGS_FILE) ?? $defaultGirlfriendSettings; $settings['occupations'] = readJsonFile(OCCUPATIONS_FILE) ?? []; $settings['personalities'] = readJsonFile(PERSONALITIES_FILE) ?? []; sendJsonResponse($settings); break;
         case 'getChatHistory': $history = []; if (file_exists(CHAT_HISTORY_FILE)) { $fileContent = readFileContent(CHAT_HISTORY_FILE); if ($fileContent !== null) { $lines = explode(PHP_EOL, trim($fileContent)); foreach ($lines as $line) { if (empty(trim($line))) continue; $decodedLine = json_decode(trim($line), true); if (json_last_error() === JSON_ERROR_NONE && $decodedLine) $history[] = $decodedLine; else logMessage('error.log', "Skipping invalid chat line: " . trim($line)); } } } sendJsonResponse($history); break; // sendJsonResponse wraps in {status, data}
         case 'checkAvatarStatus': // ** Added Logging **
@@ -226,4 +189,5 @@ if ($action) {
     sendJsonResponse(['message' => 'No action specified.'], 400);
 }
 
+// End of funMYGF.php
 ?>
