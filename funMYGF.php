@@ -18,6 +18,7 @@ define('OCCUPATIONS_FILE', DATA_DIR . '/occupation.json');
 define('PERSONALITIES_FILE', DATA_DIR . '/personality.json');
 
 // --- Helper Functions ---
+
 /** Sends JSON response and exits (Revised for consistent structure). */
 function sendJsonResponse($data, $statusCode = 200) { if (headers_sent($file, $line)) { logMessage('error.log', "sendJsonResponse ERROR: Headers already sent in {$file} on line {$line}."); exit; } http_response_code($statusCode); $isSuccess = ($statusCode >= 200 && $statusCode < 300); $responseData = []; $responseData['status'] = $isSuccess ? 'success' : 'error'; if (!$isSuccess && is_array($data) && isset($data['message'])) { $responseData['message'] = $data['message']; } elseif ($isSuccess) { $responseData['data'] = $data; } elseif (is_string($data)) { $responseData['message'] = $data; } else { $responseData['message'] = 'An unexpected error occurred.'; } if(isset($_GET['action']) && ($_GET['action'] === 'getChatHistory' || $_GET['action'] === 'getAvatars') && !isset($responseData['data'])) { $responseData['data'] = []; if(!isset($responseData['status'])) $responseData['status'] = 'success'; } $jsonOutput = json_encode($responseData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); if ($jsonOutput === false) { logMessage('error.log', "sendJsonResponse: json_encode failed! Error: " . json_last_error_msg() . " | Data: " . print_r($responseData, true)); http_response_code(500); header('Content-Type: application/json; charset=utf-8'); echo json_encode(['status' => 'error', 'message' => 'Internal server error during JSON encoding.']); exit; } if (headers_sent($file, $line)) { logMessage('error.log', "sendJsonResponse ERROR: Headers already sent (checked again) in {$file} on line {$line}."); exit; } header('Content-Type: application/json; charset=utf-8'); echo $jsonOutput; exit; }
 /** Simple file logger. */
@@ -60,7 +61,46 @@ if ($action) {
     switch ($action) {
 
         // --- Initial Data Loading ---
-        case 'getAppSettings': $llmModelsList = readJsonFile(LLM_MODELS_FILE) ?? []; $imageModelsList = readJsonFile(IMAGE_MODELS_FILE) ?? []; sendJsonResponse(['llmModels' => $llmModelsList, 'imageModels' => $imageModelsList, 'selectedLlmModelId' => $currentGirlfriendSettings['selectedLlmModelId'] ?? ($llmModelsList[0]['id'] ?? null), 'selectedImageModelId' => $currentGirlfriendSettings['selectedImageModelId'] ?? ($imageModelsList[0]['id'] ?? null)]); break;
+	// 在 funMYGF.php 的 switch ($action) 中
+	case 'getAppSettings':
+		$llmModelsList = readJsonFile(LLM_MODELS_FILE) ?? [];
+		$imageModelsList = readJsonFile(IMAGE_MODELS_FILE) ?? [];
+		$currentGirlfriendSettings = readJsonFile(GF_SETTINGS_FILE) ?? $defaultGirlfriendSettings; // 需要讀取設定來獲取預設選中項
+
+		// ** 過濾 LLM 模型列表，只保留 ID 和顯示名稱 **
+		$llmModelsForFrontend = [];
+		foreach ($llmModelsList as $model) {
+			if (isset($model['id']) && isset($model['displayName'])) {
+				 $llmModelsForFrontend[] = [
+					 'id' => $model['id'],
+					 'displayName' => $model['displayName']
+				 ];
+			}
+		}
+
+		// ** 過濾圖片模型列表，只保留 ID 和顯示名稱 **
+		$imageModelsForFrontend = [];
+		 foreach ($imageModelsList as $model) {
+			 if (isset($model['id']) && isset($model['displayName'])) {
+				  $imageModelsForFrontend[] = [
+					  'id' => $model['id'],
+					  'displayName' => $model['displayName']
+				  ];
+			 }
+		 }
+
+		// 獲取當前選中的 ID
+		$selectedLlmId = $currentGirlfriendSettings['selectedLlmModelId'] ?? ($llmModelsForFrontend[0]['id'] ?? null);
+		$selectedImageId = $currentGirlfriendSettings['selectedImageModelId'] ?? ($imageModelsForFrontend[0]['id'] ?? null);
+
+		// ** 只發送過濾後的列表和選中的 ID **
+		sendJsonResponse([
+			'llmModels' => $llmModelsForFrontend,
+			'imageModels' => $imageModelsForFrontend,
+			'selectedLlmModelId' => $selectedLlmId,
+			'selectedImageModelId' => $selectedImageId
+		]);
+		break; 
         case 'getGirlfriendSettings': if (!file_exists(GF_SETTINGS_FILE)) writeJsonFile(GF_SETTINGS_FILE, $defaultGirlfriendSettings); $settings = readJsonFile(GF_SETTINGS_FILE) ?? $defaultGirlfriendSettings; $settings['occupations'] = readJsonFile(OCCUPATIONS_FILE) ?? []; $settings['personalities'] = readJsonFile(PERSONALITIES_FILE) ?? []; sendJsonResponse($settings); break;
         case 'getChatHistory': $history = []; if (file_exists(CHAT_HISTORY_FILE)) { $fileContent = readFileContent(CHAT_HISTORY_FILE); if ($fileContent !== null) { $lines = explode(PHP_EOL, trim($fileContent)); foreach ($lines as $line) { if (empty(trim($line))) continue; $decodedLine = json_decode(trim($line), true); if (json_last_error() === JSON_ERROR_NONE && $decodedLine) $history[] = $decodedLine; else logMessage('error.log', "Skipping invalid chat line: " . trim($line)); } } } sendJsonResponse($history); break; // sendJsonResponse wraps in {status, data}
         case 'checkAvatarStatus': // ** Added Logging **
@@ -98,6 +138,8 @@ if ($action) {
              logMessage('debug.log', 'getAvatars: Final count: ' . count($avatars));
              sendJsonResponse($avatars); // sendJsonResponse wraps in {status, data}
              break;
+        // case 'getImageHistory': Removed
+        // case 'deleteImage': Removed
 
         // --- Core Actions ---
         case 'sendMessage':
