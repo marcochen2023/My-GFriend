@@ -291,8 +291,25 @@ const GIFTS = [ { id: 'rose', price: { 'zh-TW': 'NT$150', 'en': 'US$5', 'ja': 'Â
 /** Populates gift modal. */
 function populateGiftModal() { const container = getElement('gift-list-container'); if(!container) return; container.innerHTML = ''; GIFTS.forEach(gift => { const itemDiv = document.createElement('div'); itemDiv.classList.add('gift-item'); itemDiv.dataset.giftId = gift.id; itemDiv.dataset.giftValue = gift.value; itemDiv.dataset.giftNameKey = gift.nameKey; const img = document.createElement('img'); img.src = gift.img || 'image/gifts/default.png'; img.alt = translate(gift.nameKey) || gift.id; img.loading = 'lazy'; img.onerror = () => { img.src = 'image/gifts/default.png'; }; const nameSpan = document.createElement('span'); nameSpan.classList.add('gift-name'); nameSpan.textContent = translate(gift.nameKey) || gift.id; const priceSpan = document.createElement('span'); priceSpan.classList.add('gift-price'); priceSpan.textContent = gift.price[currentLanguage] || gift.price['en'] || 'N/A'; const sendBtn = document.createElement('button'); sendBtn.classList.add('send-gift-confirm-btn'); sendBtn.textContent = translate('sendGiftConfirmBtn'); itemDiv.appendChild(img); itemDiv.appendChild(nameSpan); itemDiv.appendChild(priceSpan); itemDiv.appendChild(sendBtn); container.appendChild(itemDiv); }); }
 /** Handles gift send button clicks. */
-function handleGiftSendClick(event) { if (event.target.classList.contains('send-gift-confirm-btn')) { const giftItem = event.target.closest('.gift-item'); if (giftItem?.dataset?.giftId && giftItem.dataset.giftValue && giftItem.dataset.giftNameKey) { const giftId = giftItem.dataset.giftId; const giftValue = parseInt(giftItem.dataset.giftValue, 10); const giftName = translate(giftItem.dataset.giftNameKey); if (confirm(translate('confirmSendGift', { giftName: giftName }))) sendGift(giftId, giftValue, giftName); } } }
-/** Sends gift data to backend. */
+function handleGiftSendClick(event) {
+    // Check if the click target is the send button within a gift item
+    if (event.target.classList.contains('send-gift-confirm-btn')) {
+        const giftItem = event.target.closest('.gift-item'); // Find the parent .gift-item element
+
+        // Check if the necessary data attributes exist on the gift item
+        if (giftItem?.dataset?.giftId && giftItem.dataset.giftValue && giftItem.dataset.giftNameKey) {
+            const giftId = giftItem.dataset.giftId;
+            const giftValue = parseInt(giftItem.dataset.giftValue, 10);
+            const giftName = translate(giftItem.dataset.giftNameKey); // Still useful for logging or potential future use
+
+            console.log(`Sending gift ${giftName} (ID: ${giftId}) without confirmation.`); // Log the action
+            sendGift(giftId, giftValue, giftName);
+
+        } else {
+            console.error("Could not find necessary gift data attributes on clicked item.", giftItem);
+        }
+    }
+}/** Sends gift data to backend. */
 async function sendGift(giftId, giftValue, giftName) {
     showLoading('sendingText');
     hideModal('gift-modal');
