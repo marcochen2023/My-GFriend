@@ -1,7 +1,6 @@
 # MY GFRIEND：您的 AI 雲端女友 (v1.0 - 開源版)
 
-[英文](README.en.md)
-[簡體中文](README.zh-cn.md)
+[英文](README.en.md)  |  [簡體中文](README.zh-cn.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 想像您有一個專屬的女友，隨時隨地陪伴您，與您聊天、分享心情、送您甜蜜的訊息。現在，MY GFRIEND 讓這個夢想更近一步！這是一個 **開源** 的 AI 雲端女友專案，透過串接**本地 AI 模型**，旨在為您提供一個**私密、可自訂、且具備互動性**的聊天體驗。
