@@ -6,7 +6,7 @@
 想像您有一个专属的女友，随时随地陪伴您，与您聊天、分享心情、送您甜蜜的讯息。现在，MY GFRIEND 让这个梦想更近一步！这是一个 **开源** 的 AI 云端女友专案，透过串接**本地 AI 模型**，旨在为您提供一个**私密、可自订、且具备互动性**的聊天体验。
 
 
-![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/MyGFriend.jpg)
+![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/MyGFriend_en.jpg)
 
 
 ## ✨ 功能特色
