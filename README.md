@@ -7,7 +7,7 @@
 
 Imagine having a dedicated girlfriend who's always there for you, ready to chat, share feelings, and send sweet messages anytime, anywhere. Now, MY GFRIEND brings this dream one step closer! This is an **open-source** AI cloud girlfriend project that connects to **local AI models**, aiming to provide you with a **private, customizable, and interactive** chat experience.
 
-![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/MyGFriend.jpg)
+![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/MyGFriend_en.jpg)
 ## ✨ Features
 
 * **Familiar Chat Interface:** Modeled after popular instant messengers like Line/WeChat, supporting both PC and mobile devices with a stylish pink CSS UI.
