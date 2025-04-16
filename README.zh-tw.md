@@ -8,6 +8,7 @@
 
 ![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/MyGFriend.jpg)
 
+[![點此觀看影片](https://img.youtube.com/vi/6lvPyDvDBfw/0.jpg)](https://www.youtube.com/watch?v=6lvPyDvDBfw)
 
 ## ✨ 功能特色
 
