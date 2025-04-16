@@ -9,7 +9,7 @@ Imagine having a dedicated girlfriend who's always there for you, ready to chat,
 
 ![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/MyGFriend_en.jpg)
 
-[![YouTube 影片](https://github.com/marcochen2023/My-GFriend/blob/main/example/Cover01.jpg)](https://www.youtube.com/watch?v=6lvPyDvDBfw)
+[![YouTube 影片](https://www.youtube.com/watch?v=6lvPyDvDBfw)]
 
 ## ✨ Features
 
