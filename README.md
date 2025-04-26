@@ -117,6 +117,7 @@ Before starting, ensure your computer environment meets the following conditions
 
 ## 📖 File Structure
 
+```
 MYGFRIEND/
 │
 ├── .git/              # Git directory (auto-generated)
@@ -135,7 +136,9 @@ MYGFRIEND/
 │   ├── .gitignore     # Ignore user data in this directory
 │   ├── occupation.json  # Occupation examples, customizable
 │   ├── personality.json # Personality examples, customizable
-│   └── girlfriend_settings.json.template # Girlfriend settings template file
+│   ├── girlfriend_settings.json.template # Girlfriend settings template file
+│   └── sound/
+│       └── gift.wav # gift sound
 │
 └── image/
 	├── .gitignore     # Ignore user-uploaded/generated image directories
@@ -154,7 +157,7 @@ MYGFRIEND/
 	└── gifts/         # (Optional) Contains gift images
 	└── default.png  # Example
 	└── ...
-
+```
 
 ## 📖 Usage Instructions
 

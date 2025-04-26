@@ -38,6 +38,85 @@ function hideModal(modalId) { const modal = getElement(modalId); if (modal) { mo
 function translate(key, replacements = {}) { let text = languagePacks[currentLanguage]?.[key] || key; for (const placeholder in replacements) { text = text.replace(`{${placeholder}}`, replacements[placeholder]); } return text; }
 function translateUI() { document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.getAttribute('data-translate-key'); const translation = translate(key); const isButtonOrInput = el.tagName === 'INPUT' || el.tagName === 'BUTTON'; if (el.hasAttribute('title')) { el.title = translation; } if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { if (el.type === 'button' || el.type === 'submit' || el.type === 'reset') el.value = translation; else if (el.placeholder !== undefined) el.placeholder = translation; } else if (el.tagName === 'BUTTON' && !el.innerHTML.match(/<img|<svg/i) && !el.classList.contains('send-button') && !el.classList.contains('icon-button')) { el.textContent = translation; } else if (el.tagName === 'OPTION' && el.dataset.translateKey) { el.textContent = translation; } else if (!isButtonOrInput && !el.innerHTML.match(/<img|<svg/i)) { if (el.children.length === 0 || el.textContent.trim() === el.innerHTML.trim()) el.textContent = translation; } }); document.title = translate('appTitle'); if(girlfriendNameInput) girlfriendNameInput.placeholder = translate('defaultGirlfriendName'); if(userNameInput) userNameInput.placeholder = translate('defaultUserName'); if (girlfriendSettings.occupations && girlfriendOccupationSelect) populateDropdown(girlfriendOccupationSelect, girlfriendSettings.occupations, 'occupation'); if (girlfriendSettings.personalities && girlfriendPersonalitySelect) populateDropdown(girlfriendPersonalitySelect, girlfriendSettings.personalities, 'personality'); if (giftModal && giftModal.style.display === 'block') populateGiftModal(); }
 
+function showAffectionBubble(amount) {
+    // Amount can be 0 now, so check > 0 is removed from here
+    console.log(`[showAffectionBubble] Called with amount: ${amount}`);
+    const chatInterface = getElement('chat-interface');
+    if (!chatInterface) {
+        console.error("[showAffectionBubble] Error: chatInterface not found.");
+        return;
+    }
+
+    const bubble = document.createElement('div');
+    bubble.classList.add('affection-bubble');
+    bubble.textContent = `💋💕😘+${amount}`; // Shows "+0" if amount is 0
+
+    // Generate random pink-ish HSL color
+    const hue = 310 + Math.random() * 40;
+    const saturation = 70 + Math.random() * 30;
+    const lightness = 75 + Math.random() * 10;
+    const bgColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    bubble.style.backgroundColor = bgColor;
+    bubble.style.boxShadow = `0 0 15px hsl(${hue}, ${saturation}%, ${lightness - 10}%)`;
+    console.log(`[showAffectionBubble] Bubble color set to: ${bgColor}`);
+
+    // ** MODIFICATION: Calculate center position **
+    try {
+        const containerWidth = chatInterface.clientWidth;
+        const containerHeight = chatInterface.clientHeight; // Visible height
+        const bubbleSize = 200; // Match CSS width/height
+
+        // Calculate center coordinates relative to the container
+        const centerLeft = (containerWidth - bubbleSize) / 2;
+        const centerTop = (containerHeight - bubbleSize) / 2;
+
+        // Add scroll position to the top coordinate
+        const finalTop = chatInterface.scrollTop + centerTop;
+        const finalLeft = centerLeft;
+
+        bubble.style.top = `${finalTop}px`;
+        bubble.style.left = `${finalLeft}px`;
+        console.log(`[showAffectionBubble] Calculated center position - Top: ${finalTop}px, Left: ${finalLeft}px`);
+
+    } catch (e) {
+         console.error("[showAffectionBubble] Error calculating position:", e);
+         bubble.style.top = '50px'; // Fallback position
+         bubble.style.left = '50px';
+    }
+    // ** End Modification **
+
+    // Play sound effect
+    try {
+        const audio = new Audio('data/sound/gift.wav');
+        console.log("[showAffectionBubble] Attempting to play sound...");
+        audio.play().catch(e => console.warn("Audio playback failed:", e));
+    } catch (e) {
+        console.error("Failed to create or play audio:", e);
+    }
+
+    // Append to chat interface
+    try {
+         chatInterface.appendChild(bubble);
+         console.log("[showAffectionBubble] Bubble appended to DOM.");
+    } catch(e) {
+         console.error("[showAffectionBubble] Error appending bubble to DOM:", e);
+         return;
+    }
+
+    // Set timeout for fade-out (using CSS transition)
+    setTimeout(() => {
+        console.log("[showAffectionBubble] Starting fade out (setting opacity to 0)");
+        bubble.style.opacity = '0';
+    }, 3000); // Start fade after 3 seconds
+
+    // Set timeout for removal after transition finishes (3s delay + 5s transition = 8s)
+    setTimeout(() => {
+        console.log("[showAffectionBubble] Removing bubble from DOM.");
+        bubble.remove();
+    }, 8000);
+
+} // End of showAffectionBubble
+
 // --- Language Handling ---
 async function loadLanguagePacks() { try { const response = await fetch('languagepacks.json'); if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); languagePacks = await response.json(); console.log("Lang packs loaded."); } catch (error) { console.error('Failed load lang packs:', error); alert('Could not load lang settings.'); } }
 function setLanguage(lang) { if (languagePacks[lang]) { currentLanguage = lang; localStorage.setItem('preferredLanguage', lang); if(languageSwitcher) languageSwitcher.value = lang; translateUI(); console.log(`Lang changed: ${currentLanguage}`); } else console.warn(`Lang pack "${lang}" not found.`); }
@@ -408,7 +487,7 @@ async function saveGirlfriendSettings() { const saveBtn = getElement('save-girlf
 function updateFavorability(newValue) { const bar = getElement('favorability-bar'); const val = getElement('favorability-value'); if(!bar || !val) return; const maxFavor = 1000, minFavor = -1000, totalRange = maxFavor - minFavor; const clampedValue = Math.max(minFavor, Math.min(maxFavor, newValue)); const progressValue = clampedValue - minFavor; bar.value = progressValue; val.textContent = `${clampedValue} / ${maxFavor}`; girlfriendSettings.favorability = clampedValue; }
 
 // --- Gift System ---
-const GIFTS = [ { id: 'rose', price: { 'zh-TW': 'NT$150', 'en': 'US$5', 'ja': '¥550' }, value: 5, nameKey: 'giftRoseName', img: 'image/gifts/rose.png' }, { id: 'choc', price: { 'zh-TW': 'NT$300', 'en': 'US$10', 'ja': '¥1100' }, value: 10, nameKey: 'giftChocName', img: 'image/gifts/chocolate.png' }, { id: 'teddy', price: { 'zh-TW': 'NT$900', 'en': 'US$30', 'ja': '¥3300' }, value: 25, nameKey: 'giftTeddyName', img: 'image/gifts/teddy.png' }, { id: 'perfume', price: { 'zh-TW': 'NT$2000', 'en': 'US$70', 'ja': '¥7700' }, value: 50, nameKey: 'giftPerfumeName', img: 'image/gifts/perfume.png' }, { id: 'necklace', price: { 'zh-TW': 'NT$6000', 'en': 'US$200', 'ja': '¥22000' }, value: 100, nameKey: 'giftNecklaceName', img: 'image/gifts/necklace.png' }, { id: 'luxury_bag', price: { 'zh-TW': 'NT$150000', 'en': 'US$5000', 'ja': '¥550000' }, value: 500, nameKey: 'giftLuxuryBagName', img: 'image/gifts/bag.png' }, { id: 'sports_car', price: { 'zh-TW': 'NT$6000000', 'en': 'US$200000', 'ja': '¥22000000' }, value: 1000, nameKey: 'giftSportsCarName', img: 'image/gifts/car.png' }];
+const GIFTS = [ { id: 'rose', price: { 'zh-TW': 'NT$150', 'en': 'US$5', 'ja': '¥550' }, value: 5, nameKey: 'giftRoseName', img: 'image/gifts/rose.png' }, { id: 'choc', price: { 'zh-TW': 'NT$300', 'en': 'US$10', 'ja': '¥1100' }, value: 10, nameKey: 'giftChocName', img: 'image/gifts/chocolate.png' }, { id: 'teddy', price: { 'zh-TW': 'NT$900', 'en': 'US$30', 'ja': '¥3300' }, value: 20, nameKey: 'giftTeddyName', img: 'image/gifts/teddy.png' }, { id: 'perfume', price: { 'zh-TW': 'NT$2000', 'en': 'US$70', 'ja': '¥7700' }, value: 30, nameKey: 'giftPerfumeName', img: 'image/gifts/perfume.png' }, { id: 'necklace', price: { 'zh-TW': 'NT$6000', 'en': 'US$200', 'ja': '¥22000' }, value: 50, nameKey: 'giftNecklaceName', img: 'image/gifts/necklace.png' }, { id: 'luxury_bag', price: { 'zh-TW': 'NT$150000', 'en': 'US$5000', 'ja': '¥550000' }, value: 80, nameKey: 'giftLuxuryBagName', img: 'image/gifts/bag.png' }, { id: 'sports_car', price: { 'zh-TW': 'NT$6000000', 'en': 'US$200000', 'ja': '¥22000000' }, value: 200, nameKey: 'giftSportsCarName', img: 'image/gifts/car.png' }];
 /** Populates gift modal. */
 function populateGiftModal() { const container = getElement('gift-list-container'); if(!container) return; container.innerHTML = ''; GIFTS.forEach(gift => { const itemDiv = document.createElement('div'); itemDiv.classList.add('gift-item'); itemDiv.dataset.giftId = gift.id; itemDiv.dataset.giftValue = gift.value; itemDiv.dataset.giftNameKey = gift.nameKey; const img = document.createElement('img'); img.src = gift.img || 'image/gifts/default.png'; img.alt = translate(gift.nameKey) || gift.id; img.loading = 'lazy'; img.onerror = () => { img.src = 'image/gifts/default.png'; }; const nameSpan = document.createElement('span'); nameSpan.classList.add('gift-name'); nameSpan.textContent = translate(gift.nameKey) || gift.id; const priceSpan = document.createElement('span'); priceSpan.classList.add('gift-price'); priceSpan.textContent = gift.price[currentLanguage] || gift.price['en'] || 'N/A'; const sendBtn = document.createElement('button'); sendBtn.classList.add('send-gift-confirm-btn'); sendBtn.textContent = translate('sendGiftConfirmBtn'); itemDiv.appendChild(img); itemDiv.appendChild(nameSpan); itemDiv.appendChild(priceSpan); itemDiv.appendChild(sendBtn); container.appendChild(itemDiv); }); }
 /** Handles gift send button clicks. */
@@ -436,57 +515,59 @@ function handleGiftSendClick(event) {
 async function sendGift(giftId, giftValue, giftName) {
     showLoading('sendingText');
     hideModal('gift-modal');
+    const oldFavorability = girlfriendSettings.favorability ?? 0;
+    console.log(`[sendGift] Starting. Old favorability: ${oldFavorability}`);
+
     try {
-        const payload = {
-            giftId: giftId, giftValue: giftValue, giftName: giftName, // Send giftName for logging/default
-            currentFavorability: girlfriendSettings.favorability ?? 0,
-            girlfriendName: girlfriendSettings.name || '',
-            userName: girlfriendSettings.userName || '',
-            llmModelId: appSettings.selectedLlmModelId,
-            language: currentLanguage
-        };
-        console.log("Sending gift payload:", payload); // Log payload
-
+        const payload = { giftId: giftId, giftValue: giftValue, currentFavorability: oldFavorability, girlfriendName: girlfriendSettings.name || '', userName: girlfriendSettings.userName || '', llmModelId: appSettings.selectedLlmModelId, language: currentLanguage };
         const response = await fetchData('sendGift', payload, 'POST');
-        console.log("Received sendGift response:", response); // ** Log raw response **
+        console.log("[sendGift] Received response:", response);
 
-        // ** Check status and data structure **
-        if (response && response.status === 'success' && response.data) {
+        if (response?.status === 'success' && response.data) {
             const responseData = response.data;
-
             const userMessageId = `temp_gift_${Date.now()}`;
             const userMessageTimestamp = new Date();
-            displayMessage('user', `[Sent Gift: ${giftName}]`, userMessageTimestamp, null, userMessageId);
+            displayMessage('user', `🎁🎁🎁 ${giftName}🎁🎁🎁`, userMessageTimestamp, null, userMessageId);
             chatHistory.push({ id: responseData.userMessageId || userMessageId, sender: 'user', text: `[Sent Gift: ${giftName}]`, imageUrl: null, timestamp: userMessageTimestamp.toISOString() });
-
             const ci = getElement('chat-interface');
-            if (responseData.userMessageId && userMessageId !== responseData.userMessageId) {
-                const uMel = ci?.querySelector(`[data-message-id="${userMessageId}"]`);
-                if(uMel) uMel.dataset.messageId = responseData.userMessageId;
-            }
+            if (responseData.userMessageId && userMessageId !== responseData.userMessageId) { const uMel = ci?.querySelector(`[data-message-id="${userMessageId}"]`); if(uMel) uMel.dataset.messageId = responseData.userMessageId; }
+
+            let increase = 0; // Initialize increase
             if (responseData.newFavorability !== undefined) {
-                updateFavorability(responseData.newFavorability);
+                console.log(`[sendGift] Updating favorability from ${oldFavorability} to ${responseData.newFavorability}`);
+                // Calculate increase *before* clamping in updateFavorability might happen
+                // Or calculate based on the returned value vs old value
+                const newClampedFavorability = Math.max(-1000, Math.min(1000, responseData.newFavorability));
+                increase = newClampedFavorability - oldFavorability;
+                // Ensure increase isn't negative if favorability was already maxed but backend sent clamped value
+                increase = Math.max(0, increase);
+
+                updateFavorability(responseData.newFavorability); // Update global state and UI
             }
+
+            // ** MODIFICATION: Always call showAffectionBubble, pass calculated increase (can be 0) **
+            console.log(`[sendGift] Calculated increase: ${increase}. Calling showAffectionBubble.`);
+            showAffectionBubble(increase);
+            // ** End Modification **
+
             if (responseData.reactionMessage) {
-                displayMessage('girlfriend', responseData.reactionMessage, responseData.timestamp, null, responseData.messageId, [], null); // Gifts usually don't have actions/meta
+                displayMessage('girlfriend', responseData.reactionMessage, responseData.timestamp, null, responseData.messageId, [], null);
                 chatHistory.push({ id: responseData.messageId, sender: 'girlfriend', text: responseData.reactionMessage, imageUrl: null, timestamp: responseData.timestamp, actions: [], metadata: null });
             }
-            console.log("Gift processed successfully by frontend.");
-
+            console.log("[sendGift] Processed successfully.");
         } else {
-            // Handle error or unexpected structure from backend
-            console.error("sendGift failed or returned unexpected structure:", response);
+            console.error("[sendGift] Backend returned non-success or invalid data:", response);
             displayMessage('system', `${translate('errorTitle')}: ${response?.message || translate('giftSendFailed')}`, new Date().toISOString(), null, `error_${Date.now()}`);
         }
     } catch (error) {
-        // Handle fetch error (alert already shown by fetchData)
-         console.error(">>> Error caught inside sendGift:", error);
-         displayMessage('system', `${translate('errorTitle')}: ${error.message || translate('giftSendFailed')}`, new Date().toISOString(), null, `error_${Date.now()}`);
+        console.error("[sendGift] Error caught:", error);
+        displayMessage('system', `${translate('errorTitle')}: ${error.message || translate('giftSendFailed')}`, new Date().toISOString(), null, `error_${Date.now()}`);
     } finally {
         hideLoading();
-        disableActionButtons(); // Apply cooldown AFTER request finishes
+        disableActionButtons(); // Cooldown
     }
-}
+} // End of sendGift
+
 // --- Active Frequency (Auto Messaging) ---
 /** Sets up or clears auto-message interval. */
 function setupActiveFrequency() { const freqSelect = getElement('active-frequency-select'); if(!freqSelect) return; if (activeFrequencyInterval) { clearInterval(activeFrequencyInterval); activeFrequencyInterval = null; } const intervalSeconds = parseInt(freqSelect.value, 10); if (intervalSeconds > 0) { activeFrequencyInterval = setInterval(triggerAutoMessage, intervalSeconds * 1000); console.log(`Set active frequency: ${intervalSeconds}s.`); } else console.log("Active frequency off."); girlfriendSettings.activeFrequency = freqSelect.value; }

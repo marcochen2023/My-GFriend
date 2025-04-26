@@ -1,3 +1,5 @@
+/* MYGFstyle.css - Complete Final Version (v6) */
+
 /* --- Base Styles & Variables --- */
 :root { --primary-pink: #FFC0CB; --secondary-pink: #FFB6C1; --accent-pink: #FF69B4; --dark-pink: #DB7093; --text-color: #333; --light-text-color: #555; --bubble-user-bg: #D1E8FF; --bubble-gf-bg: #FFE4E1; --border-color: #eee; --background-color: #f9f9f9; --modal-bg: rgba(0, 0, 0, 0.6); --link-color: var(--accent-pink); --font-family: 'Noto Sans TC', sans-serif; --header-height: 70px; --footer-height-actions: 45px; --footer-height-input: 55px; --input-area-padding: 8px; }
 body { margin: 0; font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
@@ -24,7 +26,16 @@ body { margin: 0; font-family: var(--font-family); background-color: var(--backg
 #favorability-value { font-weight: bold; min-width: 80px; text-align: right; }
 
 /* --- Chat Interface --- */
-.chat-interface { flex-grow: 1; padding: 15px; overflow-y: auto; background-color: #fff; display: flex; flex-direction: column; }
+.chat-interface { 
+	flex-grow: 1; 
+	padding: 15px; 
+	overflow-y: auto; 
+	background-color: #fff; 
+	display: flex; 
+	flex-direction: column; 
+    position: relative; 
+
+}
 .message-container { display: flex; margin-bottom: 15px; max-width: 85%; position: relative; }
 .message-avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; align-self: flex-start; cursor: pointer; border: 1px solid var(--border-color); object-fit: cover; }
 .message-content { display: flex; flex-direction: column; max-width: calc(100% - 50px); }
@@ -99,6 +110,35 @@ body { margin: 0; font-family: var(--font-family); background-color: var(--backg
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 #avatar-cropper-container img { display: block; max-width: 100%; }
+
+/* --- Affection Bubble Effect --- */
+.affection-bubble {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.8em;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 5s ease-out; 
+}
+
+/* Define the fade in/out animation */
+@keyframes affectionFadeInOut {
+    0% { opacity: 0; transform: scale(0.8); } /* Start slightly smaller and faded in */
+    10% { opacity: 1; transform: scale(1); }  /* Quickly fade in and scale up */
+    /* 10% to 37.5% (approx 3s / 8s total) - Stay visible */
+    37.5% { opacity: 1; transform: scale(1); }
+    /* 37.5% to 100% (approx 5s / 8s total) - Fade out */
+    100% { opacity: 0; transform: scale(1.1); } /* Fade out and slightly scale up */
+}
 
 /* --- Responsiveness --- */
 @media (max-width: 768px) {
