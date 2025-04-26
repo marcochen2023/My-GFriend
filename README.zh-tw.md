@@ -68,7 +68,7 @@
 
 1.  **下載/Clone 專案：**
     ```bash
-    git clone [https://github.com/您的用戶名/MYGFRIEND.git](https://github.com/您的用戶名/MYGFRIEND.git)
+    git clone https://github.com/marcochen2023/My-GFriend.git
     # 或者直接下載 ZIP 解壓縮
     ```
 2.  **放置專案：** 將整個 `MYGFRIEND` 資料夾放置到您的 Web 伺服器的網站根目錄下 (例如 XAMPP 的 `htdocs` 目錄)。

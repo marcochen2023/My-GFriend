@@ -69,7 +69,7 @@ Before starting, ensure your computer environment meets the following conditions
 
 1.  **Download/Clone Project:**
     ```bash
-    git clone [https://github.com/your-username/MYGFRIEND.git](https://github.com/your-username/MYGFRIEND.git)
+    git clone https://github.com/marcochen2023/My-GFriend.git
     # Or download the ZIP file and extract it
     ```
     *(Remember to replace `your-username` with the actual repository path)*
