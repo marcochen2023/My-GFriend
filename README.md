@@ -186,7 +186,7 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 ## 🧑‍💻 Developers
 
-* Sinsin Wang ([Facebook]([https://www.facebook.com/WangSinsin](https://www.facebook.com/sinsinwang2004)), [X/Twitter](https://x.com/Windgirl2003))
+* Sinsin Wang (https://www.facebook.com/sinsinwang2004), [X/Twitter](https://x.com/Windgirl2003))
 * Marco Chen (marcochen2023@gmail.com)
 * Ethan Chen
 
