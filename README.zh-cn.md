@@ -197,9 +197,6 @@ MYGFRIEND/
 
 加入我们的开源讨论社群：
 
-您已被邀请加入「My GFriend 我的云端女友开源讨论群」！请点选以下连结加入社群！
-![image](https://github.com/marcochen2023/My-GFriend/blob/main/example/QrCode.jpg)
-
-https://line.me/ti/g2/sYbY0s982DuzdBu_qPu4u2MogNE1rmK_Im1ihg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default
+[https://gemini.google.com/share/9e42a0365e90](https://gemini.google.com/share/9e42a0365e90)
 
 ---
