@@ -185,7 +185,7 @@ MYGFRIEND/
 ## 🧑‍💻 开发者 (Developers)
 
 * Sinsin Wang
-(https://www.facebook.com/WangSinsin)
+([https://www.facebook.com/WangSinsin](https://www.facebook.com/sinsinwang2004))
 (https://x.com/Windgirl2003)
 
 * Marco Chen
