@@ -195,5 +195,5 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 Join our open-source discussion group:
 
 You've been invited to join the "My GFriend Open Source Discussion Group"! Click the link below to join!
-![Line QR Code](https://github.com/marcochen2023/My-GFriend/blob/main/example/QrCode.jpg)
-[https://line.me/ti/g2/sYbY0s982DuzdBu_qPu4u2MogNE1rmK_Im1ihg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default](https://line.me/ti/g2/sYbY0s982DuzdBu_qPu4u2MogNE1rmK_Im1ihg?utm_source=invitation&utm_medium=link_copy&utm_campaign=default)
+
+[https://gemini.google.com/share/9e42a0365e90](https://gemini.google.com/share/9e42a0365e90)
